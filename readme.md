@@ -136,3 +136,53 @@ kafka-console-consumer -help
 kafka-console-consumer --bootstrap-server=127.0.0.1:9092 --topic=web_log --from-beginning
 
 ```
+### context
+goroutine 管理
+
+context.Context
+
+两个根节点：```context.TODO()```、```context.Background()```
+
+四个方法：
+
+* ```context.withCancel```：把context.Context变量调用一下withCancel，返回一个context对象和一
+* ```context.withTimeout()``` 设置相对时间
+* ```context.withDeadline()```设置绝对时间
+* ```context.withValue()```用在请求，一般web框架来一个请求，启动一个goroutine来处理，这个goroutine下可能衍生其他goroutine，使用其，可以实现父goroutine下的多个子goroutine的传值
+
+用法回顾
+
+```
+func f(ctx context.Context){
+	defer wg.Done
+loop:
+	for {
+		select{
+			case:<-ctx.Done
+				break loop
+			default:
+				time.sleep(time.Second)
+		}	
+	}
+}
+
+var wg sync.WaitGroup
+func main(){
+	ctx,cancel:=context.WithCancel(context.Background())
+	go f(ctx)
+	time.sleep(3*time.second)
+	cancel()
+	wg.Wait()
+}
+```
+## 日志收集项目回顾
+为什么自己写不用ELK？
+
+* ELK：部署的时候麻烦，每一个filebeat都需要配置一个配置文件
+
+因此：
+
+* 使用etcd来管理被收集的日志项
+
+### 日志架构
+
