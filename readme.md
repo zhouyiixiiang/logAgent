@@ -122,4 +122,17 @@ git remote add origin https://github.com/zhouyiixiiang/casitworkspace.git
 git push -u origin master
 ```
 
-gongyong
+## 测试kafka效果
+
+路径： ```/usr/local/bin/kafka-console-consumer```
+
+使用kafka自带的终端消费者读取消息到终端
+
+```
+cd  /usr/local/bin/
+# 查看帮助文档
+kafka-console-consumer -help
+
+kafka-console-consumer --bootstrap-server=127.0.0.1:9092 --topic=web_log --from-beginning
+
+```
