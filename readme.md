@@ -1,3 +1,31 @@
+# kafka
+kafka集群架构：
+
+* broker：集群里的某台节点，可能是一台服务器上的不同端口，也可能是不同ip地址
+* topic：主题
+* partition：分区，把数据分为好几个分区从而提高负载
+	* leader：分区主节点
+	* follower：分区从节点
+* consumer group：消费者组
+
+生产者往kafka发送数据流程：
+
+* 生产者与集群leader建立连接
+* 生产者往leader发送sync
+* leader将数据保存到本地
+* follower主动向leader拉取数据
+* follower保存数据到本地，并返回ack给leader
+* leader返回ack给生产者（根据发送级别0，1，all）
+
+分区存储数据原理：
+
+* 把磁盘随机读变为顺序读，基于时间index、消息index、segment文件、offset偏移量来定位消息具体log文件中在哪里
+
+消费者组消费数据原理：
+
+* 同一个partion只能被一个消费者组中的一个消费者消费
+* 同一个partion会被多个消费者组中的一个消费者以轮询的方式消费
+
 ## kafka & zookeeper
 
 ### 启动zookeeper
