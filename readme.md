@@ -112,3 +112,13 @@ export GOPATH=/Users/ocean/go
 
 
 
+# github
+
+```
+cd project
+git init #在这个目录里初始化git仓库
+git commit -m "first commit"
+git remote add origin https://github.com/zhouyiixiiang/casitworkspace.git
+git push -u origin master
+```
+
