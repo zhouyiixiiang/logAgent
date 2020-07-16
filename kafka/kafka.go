@@ -1,23 +1,38 @@
 package kafka
 
 import (
-	"github.com/Shopify/sarama"
 	"common"
+	"fmt"
+	"github.com/Shopify/sarama"
 )
+
 var (
-	clientKafka sarama.AsyncProducer
+	clientKafka sarama.SyncProducer
 )
-func Init(){
-	config:=sarama.NewConfig()
-	config.Producer.RequiredAcks=sarama.WaitForAll
-	config.Producer.Partitioner=sarama.NewRandomPartitioner
-	config.Producer.Return.Successes=true
-	var err error
-	clientKafka,err=sarama.NewAsyncProducer([]string{"127.0.0.1:9092"},config)
-	common.ErrorHandle(err,"sarama.NewAsyncProducer")
+
+func Init(addrs []string) (err error) {
+	config := sarama.NewConfig()
+	config.Producer.RequiredAcks = sarama.WaitForAll
+	config.Producer.Partitioner = sarama.NewRandomPartitioner
+	config.Producer.Return.Successes = true
+
+	// 连接kafka
+	clientKafka, err = sarama.NewSyncProducer(addrs, config)
+	if err != nil {
+		fmt.Println("sarama.NewSyncProducer err: ", err)
+		return err
+	}
 	//defer  clientKafka.Close()
+	return
 }
 
-func Run(){
-	clientKafka.Input()
+func SendToKafka(topic, data string) {
+	// 构造一个消息
+	msg := &sarama.ProducerMessage{}
+	msg.Topic = topic
+	msg.Value = sarama.StringEncoder(data)
+	// 发送消息到kafka
+	pid, offset, err := clientKafka.SendMessage(msg)
+	common.ErrorHandle(err, "clientKafka.SendMessage")
+	fmt.Printf("pid:%v offset:%v\n", pid, offset)
 }
