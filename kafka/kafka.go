@@ -1,7 +1,6 @@
 package kafka
 
 import (
-	"common"
 	"fmt"
 	"github.com/Shopify/sarama"
 )
@@ -26,13 +25,16 @@ func Init(addrs []string) (err error) {
 	return
 }
 
-func SendToKafka(topic, data string) {
+func SendToKafka(topic, data string)(err error) {
 	// 构造一个消息
 	msg := &sarama.ProducerMessage{}
 	msg.Topic = topic
 	msg.Value = sarama.StringEncoder(data)
 	// 发送消息到kafka
 	pid, offset, err := clientKafka.SendMessage(msg)
-	common.ErrorHandle(err, "clientKafka.SendMessage")
+	if err !=nil{
+		return err
+	}
 	fmt.Printf("pid:%v offset:%v\n", pid, offset)
+	return
 }
