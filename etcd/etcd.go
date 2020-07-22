@@ -2,6 +2,7 @@ package etcd
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"go.etcd.io/etcd/clientv3"
 	"time"
@@ -10,6 +11,11 @@ import (
 var (
 	clientEtcd *clientv3.Client
 )
+
+type LogEntry struct {
+	Path string `json:"path"`
+	Topic string `json:"topic"`
+}
 
 func Init()(err error){
 	config := clientv3.Config{
@@ -42,4 +48,17 @@ func Get(key string)(err error){
 		fmt.Println(item.Key," : ",item.Value)
 	}
 	return
+}
+func GetLogConf(key string)(logConf []*LogEntry,err error){
+	ctx,cancel:=context.WithTimeout(context.Background(),time.Duration(5 * time.Second))
+	rsp,err:=clientEtcd.Get(ctx,key)
+	cancel()
+	if err!=nil{
+		fmt.Println("clientEtcd.Get err : ",err)
+		return
+	}
+	for _,item := range rsp.Kvs{
+		json.Unmarshal(item.Value,&logConf)
+	}
+	return logConf,err
 }

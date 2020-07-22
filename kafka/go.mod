@@ -3,7 +3,6 @@ module kafka
 go 1.14
 
 require (
-	common v0.0.0-00010101000000-000000000000
 	github.com/Shopify/sarama v1.19.0
 	github.com/Shopify/toxiproxy v2.1.4+incompatible // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -16,4 +15,3 @@ require (
 	github.com/rcrowley/go-metrics v0.0.0-20200313005456-10cdbea86bc0 // indirect
 )
 
-replace common => ../common
