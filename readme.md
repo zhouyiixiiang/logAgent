@@ -150,6 +150,24 @@ git remote add origin https://github.com/zhouyiixiiang/casitworkspace.git
 git push -u origin master
 ```
 
+### github操作
+
+```
+# 查看本地和远程分支
+git branch -a
+# 在本地新建一个分支
+git branch yym
+# git checkout -b 本地分支名x origin/远程分支名x 拉取远程分支并同时创建对应的本地分支
+git checkout -b yym origin/unsy
+
+# 删除本地分支
+git branch -d yym
+# 放弃本地所有修改
+git checkout .
+```
+
+
+
 ## 测试kafka效果
 
 路径： ```/usr/local/bin/kafka-console-consumer```
@@ -214,3 +232,9 @@ func main(){
 
 ### 日志架构
 
+流程：
+
+* 发起kafka和etcd，在多台服务器上跑起来，形成集群，利用etcd的raft算法保持配置一致性
+* 每一个要进行监听日志的服务前往etcd注册一下日志地址以及Topic。
+* tailLog服务根据etcd上登记的需要监听日志的对象，追踪每一个对象的日志信息，并派一个watcher观察追踪日志信息是否发生改变
+* 如果监听的日志新增日志信息，tailLog将新增信息根据topic发送至kafka消息队列
