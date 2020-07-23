@@ -43,7 +43,8 @@ func (t* TailTask)run(){
 	for {
 		select {
 		case line:=<-t.instance.Lines:
-			kafka.SendToKafka(t.topic,line.Text)
+			kafka.WriteMsgToChan(t.topic,line.Text)
+			//kafka.SendToKafka(t.topic,line.Text)
 		}
 	}
 }
