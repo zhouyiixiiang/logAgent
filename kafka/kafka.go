@@ -8,14 +8,15 @@ import (
 
 var (
 	clientKafka sarama.SyncProducer
-	msgChan chan *KafkaMsg
+	msgChan     chan *KafkaMsg
 )
+
 type KafkaMsg struct {
 	topic string
-	data string
+	data  string
 }
 
-func Init(addrs []string,kafkamaximumSize int) (err error) {
+func Init(addrs []string, kafkamaximumSize int) (err error) {
 	config := sarama.NewConfig()
 	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Partitioner = sarama.NewRandomPartitioner
@@ -27,21 +28,21 @@ func Init(addrs []string,kafkamaximumSize int) (err error) {
 		fmt.Println("sarama.NewSyncProducer err: ", err)
 		return err
 	}
-	msgChan=make(chan *KafkaMsg,kafkamaximumSize)
+	msgChan = make(chan *KafkaMsg, kafkamaximumSize)
 	go SendToKafka()
 	//defer  clientKafka.Close()
 	return
 }
 
-func WriteMsgToChan(topic, data string){
-	msg:=&KafkaMsg{
+func WriteMsgToChan(topic, data string) {
+	msg := &KafkaMsg{
 		topic: topic,
-		data:data,
+		data:  data,
 	}
-	msgChan<-msg
+	msgChan <- msg
 }
 
-func SendToKafka()(err error) {
+func SendToKafka() (err error) {
 	for {
 		select {
 		case mg := <-msgChan:
@@ -51,12 +52,12 @@ func SendToKafka()(err error) {
 			msg.Value = sarama.StringEncoder(mg.data)
 			// 发送消息到kafka
 			pid, offset, err := clientKafka.SendMessage(msg)
-			if err !=nil{
+			if err != nil {
 				return err
 			}
-			fmt.Printf("pid:%v offset:%v\n", pid, offset)
+			fmt.Printf("pid:%v offset:%v topic:%v value:%v\n", pid, offset, msg.Topic, msg.Value)
 		default:
-			time.Sleep(time.Millisecond*50)
-			}
+			time.Sleep(time.Millisecond * 50)
+		}
 	}
 }

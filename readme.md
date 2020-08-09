@@ -83,6 +83,25 @@ zookeeper.connection.timeout.ms=18000
 cd C:\softwares\kafka\kafka_2.12-2.5.0
 bin\windows\kafka-server-start.bat config\server.properties
 ```
+## mac版kafka
+```
+# 启动zookeeper
+/usr/local/bin/zookeeper-server-start /usr/local/etc/kafka/zookeeper.properties
+# 启动kafka
+/usr/local/bin/kafka-server-start /usr/local/etc/kafka/server.properties
+# 启动消费者
+/usr/local/bin/kafka-console-consumer --topic=checkService --bootstrap-server=127.0.0.1:9092 --from-beginning
+```
+## ETCD
+```
+# 启动etcd
+cd /Users/zhouyixiang/Documents/softwares/etcd/etcd-v3.4.10-darwin-amd64
+etcd
+# 使用etcdctl
+etcdctl --endpoints=http://localhost:2379 put logAgentConf "newconf"
+etcdctl --endpoints=http://localhost:2379 get logAgentConf
+```
+
 
 ### 快速拉取go仓库：设置代理
 
@@ -238,3 +257,13 @@ func main(){
 * 每一个要进行监听日志的服务前往etcd注册一下日志地址以及Topic。
 * tailLog服务根据etcd上登记的需要监听日志的对象，追踪每一个对象的日志信息，并派一个watcher观察追踪日志信息是否发生改变
 * 如果监听的日志新增日志信息，tailLog将新增信息根据topic发送至kafka消息队列
+* etcd watch实现方法：底层通过webSocket实现给客户端发送通知
+* 如果有日志信息改变，例如删除了，可以通过context.Cancel退出该goroutine
+
+整体回顾：
+
+* 不同机器的配置不同，但需要同一个etcd配置
+	* 可以从etcd起来的时候，获取本机的ip地址，用于不同配置的实现	
+
+
+
