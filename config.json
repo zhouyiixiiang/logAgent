@@ -1,0 +1,47 @@
+{
+  "MysqlSetting":
+  {
+    "book_agent":
+    {
+      "MysqlConn": "root:zyx1994319@(localhost:3306)/book_agent",
+      "MysqlConnectPoolSize": 5
+    }
+  },
+  "EtcdSetting":
+  {
+    "log_agent":
+    {
+      "Addrs": ["127.0.0.1:2379"],
+      "DialTimeout":5
+    }
+  },
+  "TCPSetting":
+  {
+    "book_agent":
+    {
+      "ServerAddr": "127.0.0.1:8000",
+      "ServerMaxOrderChanNum": 10
+    }
+  },
+  "LocalSetting":
+  {
+    "book_agent":
+    {
+      "BookStoreDir": "/Users/zhouyixiang/Documents/workspace/src/logAgent"
+    }
+  },
+  "KafkaSetting":
+  {
+    "book_agent":
+    {
+      "addrs": ["127.0.0.1:9092"],
+      "MaximumChanSize": 100,
+      "CheckServiceTopic": "checkService"
+    },
+    "log_agent":
+    {
+      "addrs": ["127.0.0.1:9092"],
+      "MaximumChanSize": 10000
+    }
+  }
+}

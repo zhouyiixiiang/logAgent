@@ -4,6 +4,7 @@ go 1.14
 
 replace (
 	common => ./common
+	config => ./config
 	etcd => ./etcd
 	kafka => ./kafka
 	tailog => ./tailog
@@ -12,6 +13,7 @@ replace (
 
 require (
 	common v0.0.0-00010101000000-000000000000
+	config v0.0.0-00010101000000-000000000000
 	etcd v0.0.0-00010101000000-000000000000
 	github.com/coreos/etcd v3.3.22+incompatible // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect

@@ -2,6 +2,7 @@ package main
 
 import (
 	"common"
+	"config"
 	"etcd"
 	"fmt"
 	"kafka"
@@ -12,12 +13,15 @@ import (
 
 func main() {
 	var err error
+	err = config.Init("./config.json")
+	common.ErrorHandle(err, "config Init")
 	// 初始化kafka连接----↓---
-	err = kafka.Init([]string{"127.0.0.1:9092"}, 100000)
+	err = kafka.Init(config.Config.KafkaSetting[config.SrvName].Addrs, config.Config.KafkaSetting[config.SrvName].MaximumChanSize)
+	//err = kafka.Init([]string{"127.0.0.1:9092"}, 100000)
 	common.ErrorHandle(err, "kafka.Init")
 	fmt.Println("init kafka success")
 	//初始化etcd
-	err = etcd.Init()
+	err = etcd.Init(config.Config.EtcdSetting[config.SrvName].Addrs, config.Config.EtcdSetting[config.SrvName].DialTimeout)
 	common.ErrorHandle(err, "etcd.Init")
 	fmt.Println("init etcd success")
 	// 为每一个etcd获取配置信息

@@ -17,10 +17,10 @@ type LogEntry struct {
 	Topic string `json:"topic"`
 }
 
-func Init() (err error) {
+func Init(addrs []string, timeOut int) (err error) {
 	config := clientv3.Config{
-		Endpoints:   []string{"127.0.0.1:2379"},
-		DialTimeout: 5 * time.Second,
+		Endpoints:   addrs,
+		DialTimeout: time.Duration(timeOut) * time.Second,
 	}
 	clientEtcd, err = clientv3.New(config)
 	if err != nil {
